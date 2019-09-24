@@ -10,8 +10,6 @@
 	"libVersion": "2.7.0",
 	"appid": "touristappid",
 	"projectname": "vmp-demo",
-	"simulatorType": "wechat",
-	"simulatorPluginLibVersion": {},
 	"condition": {
 		"search": {
 			"current": -1,

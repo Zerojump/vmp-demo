@@ -1,6 +1,9 @@
 {
   "pages": [
-    "pages/home/home"
+    "pages/home/home",
+    "pages/history/history",
+    "pages/tape/tape",
+    "pages/detail/detail"
   ],
   "subPackages": [],
   "window": {
@@ -9,6 +12,5 @@
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   },
-  "usingComponents": {},
-  "sitemapLocation": "sitemap.json"
+  "usingComponents": {}
 }

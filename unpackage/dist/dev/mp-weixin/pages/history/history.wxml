@@ -1,0 +1,1 @@
+<view><scroll-view class="nav" scroll-x="true" scroll-left="120"><block wx:for="{{tabs}}" wx:for-item="item" wx:for-index="index"><view class="nav-item" id="demo1">{{item.title}}</view></block></scroll-view></view>

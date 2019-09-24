@@ -5,7 +5,22 @@
 		    "style" : {
 				"navigationBarTitleText": "狗尾草小鹦鹉"
 			}
-		}
+		},{
+            "path" : "pages/history/history",
+            "style" : {
+				"navigationBarTitleText": "历史数据"
+			}
+        },{
+            "path" : "pages/tape/tape",
+            "style" : {
+				"navigationBarTitleText": "录音"
+			}
+        },{
+            "path" : "pages/detail/detail",
+            "style" : {
+				"navigationBarTitleText": "录音详情"
+			}
+        }
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
