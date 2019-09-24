@@ -105,26 +105,117 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //
-//
-//
-//
-//
-//
-//
-//
-var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var uniList = function uniList() {return __webpack_require__.e(/*! import() | components/uni-list/uni-list */ "components/uni-list/uni-list").then(__webpack_require__.bind(null, /*! ../../components/uni-list/uni-list.vue */ 38));};var uniListItem = function uniListItem() {return __webpack_require__.e(/*! import() | components/uni-list-item/uni-list-item */ "components/uni-list-item/uni-list-item").then(__webpack_require__.bind(null, /*! @/components/uni-list-item/uni-list-item.vue */ 45));};var _default =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {
+  components: { uniList: uniList, uniListItem: uniListItem },
   data: function data() {
     return {
+      sessionId: '',
+      curTabIndex: 1,
+      page_size: 15,
       tabs: [
       { title: '全部', type: 'all', pageIndex: 1 },
       { title: '已通过', type: 'pass', pageIndex: 1 },
-      { title: '待审阅', type: 'pending', pageIndex: 1 }] };
+      { title: '待审阅', type: 'pending', pageIndex: 1 }],
+
+      list: [],
+      scrollTop: 0,
+      old: {
+        scrollTop: 0 } };
 
 
   },
-  methods: {} };exports.default = _default;
+  onLoad: function onLoad() {
+    var page = this.getList(this.curTabIndex, false);
+  },
+  methods: {
+    changeTab: function changeTab(tabIndex) {
+      this.curTabIndex = tabIndex;
+      this.getList(tabIndex, false);
+    },
+    getList: function getList(tabIndex, more) {
+      var self = this;
+      var tab = self.tabs[tabIndex];
+      var page_index = tab.pageIndex;
+      console.log(tab.type + ' ' + more + ' ' + page_index);
+      if (more) {
+        page_index = tab.pageIndex + 1;
+      }
+
+      uni.request({
+        // url: 'http://172.27.1.207:8009/rmserver/get-history-records',
+        url: 'http://localhost:9097/rmserver/get-history-records',
+        method: 'POST',
+        data: {
+          "query_type": tab.type,
+          "count": self.page_size,
+          "cur_page": page_index },
+
+        header: {
+          "Gowild-SessionId": uni.getStorageSync('sessionId') },
+
+        success: function success(res) {
+          self.curTabIndex = tabIndex;
+          self.tabs[self.curTabIndex].pageIndex = page_index;
+          if (more) {
+            self.list = self.list.concat(res.data.list);
+          } else {
+            self.list = res.data.list;
+          }
+          console.log(self.list.length);
+        },
+        fail: function fail() {},
+        complete: function complete() {} });
+
+    },
+    scroll: function scroll(e) {
+      // console.log(e)
+      this.old.scrollTop = e.detail.scrollTop;
+      console.log('getList');
+      this.getList(this.curTabIndex, true);
+    },
+    openDetail: function openDetail(audioid) {
+      uni.navigateTo({
+        url: '../detail/detail?audioId=' + audioid });
+
+    },
+    upper: function upper(e) {
+      console.log('top');
+      console.log(e);
+    },
+    lower: function lower(e) {
+      console.log('end');
+      console.log(e);
+    },
+    goTop: function goTop(e) {
+      console.log(e);
+      this.scrollTop = this.old.scrollTop;
+      this.$nextTick(function () {
+        this.scrollTop = 0;
+      });
+      uni.showToast({
+        icon: "none",
+        title: "纵向滚动 scrollTop 值已被修改为 0" });
+
+    } } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ }),
 

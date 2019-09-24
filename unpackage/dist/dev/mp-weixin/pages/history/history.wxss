@@ -22,4 +22,8 @@
 .nav-item.active{
     color: green;
 }
+.scroll-Y {
+	margin-top:80rpx;
+	height: 1100rpx;
+}
 
