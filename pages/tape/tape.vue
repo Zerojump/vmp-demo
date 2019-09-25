@@ -13,9 +13,9 @@
 			</uni-list>
 
 			<view class="uni-btn-v">
-				<button @tap="startRecord" type="primary">开始录音</button>
-				<button @tap="endRecord">停止录音</button>
-				<button @tap="playVoice">播放录音</button>
+				<button @tap="startRecord" type="primary" v-show="!isRecord">开始录音</button>
+				<button @tap="endRecord" type="primary" v-show="isRecord">停止录音</button>
+				<button @tap="playVoice" v-show="voicePath!=''">播放录音</button>
 			</view>
 		</view>
 	</view>
@@ -36,11 +36,10 @@
 		},
 		data() {
 			return {
+				isRecord:false,
 				cur_content: '',
 				list: [],
-				text: 'uni-app',
 				voicePath: '',
-				sessionId:'',
 				sentence_id:null
 			}
 		},
@@ -81,10 +80,12 @@
 		methods: {
 			startRecord() {
 				console.log('开始录音');
+				this.isRecord = !this.isRecord
 				recorderManager.start();
 			},
 			endRecord() {
 				console.log('录音结束');
+				this.isRecord = !this.isRecord
 				recorderManager.stop();
 			},
 			playVoice() {
