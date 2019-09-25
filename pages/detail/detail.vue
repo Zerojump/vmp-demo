@@ -25,7 +25,7 @@
 				},
 				success:res=>{
 					this.record = res.data.data[0]
-					this.record.record_id = e.record_id
+					this.record.record_id = p.record_id
 					console.log(res.data)
 				},
 				fail: () => {

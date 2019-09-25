@@ -8,7 +8,7 @@
 		
 		<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" lower-threshold=20 show-scrollbar=true
 		 @scroll="scroll" @scrolltoupper="upper" @scrolltolower="lower">
-			<uni-list-item class="list-item" v-bind:title="item.content" v-for="item in list" @click="openDetail(item.record_id)"></uni-list-item>
+			<uni-list-item class="list-item" v-bind:title="item.content" v-for="item in tabs[curTabIndex].list" @click="openDetail(item.record_id)"></uni-list-item>
 		</scroll-view>
 	</view>
 </template>
@@ -21,14 +21,13 @@
 		data() {
 			return {
 				scrollLeft:100,
-				curTabIndex:1,
+				curTabIndex:0,
 				page_size:15,
 				tabs:[
-					{title:'全部',type:'all',pageIndex:1,total:100000},
-					{title:'已通过',type:'pass',pageIndex:1,total:100000},
-					{title:'待审阅',type:'pending',pageIndex:1,total:100000}
+					{title:'全部',type:'all',pageIndex:1,hasMore:true,list:[]},
+					{title:'已通过',type:'pass',pageIndex:1,hasMore:true,list:[]},
+					{title:'待审阅',type:'pending',pageIndex:1,hasMore:true,list:[]}
 				],
-				list:[],
 				scrollTop: 0,
 			}
 		},
@@ -43,7 +42,7 @@
 			getList(tabIndex,more){	
 				let self = this
 				let tab = self.tabs[tabIndex]
-				if (tab.total<=self.list.length) {
+				if (!tab.hasMore) {
 					return
 				}
 				let page_index = tab.pageIndex
@@ -67,15 +66,22 @@
 					success: res => {
 						self.curTabIndex = tabIndex
 						self.tabs[self.curTabIndex].pageIndex = page_index
-						self.tabs[self.curTabIndex].total = res.data.total
-						// console.log(res.data.list)
-						if (more) {
-							self.list = self.list.concat(res.data.list)
-						} else {
-							self.list = res.data.list
+						let list_result = res.data.data
+						console.log(list_result)
+						if (list_result.length<self.page_size){
+							self.tabs[self.curTabIndex].hasMore = false
 						}
+						if (list_result[0]) {
+							self.tabs[self.curTabIndex].list = self.tabs[self.curTabIndex].list.concat(list_result)
+							
+						} else {
+							if (!more) {
+								self.tabs[self.curTabIndex].list = []
+							} 
+						}
+						
 						// console.log(self.list)
-						console.log(self.list.length)
+						console.log(self.tabs[self.curTabIndex].list.length)
 					},
 					fail: () => {},
 					complete: () => {}
@@ -85,9 +91,9 @@
 				// console.log(e)
 				this.scrollTop = e.detail.scrollTop
 			}
-			,openDetail(audioid){
+			,openDetail(record_id){
 				uni.navigateTo({
-					url: '../detail/detail?audioId='+audioid
+					url: '../detail/detail?record_id='+record_id
 				})
 			},
 			upper: function(e) {
