@@ -11,11 +11,6 @@
 				"navigationBarTitleText": "历史数据"
 			}
         },{
-            "path" : "pages/history/history2",
-            "style" : {
-				"navigationBarTitleText": "历史数据"
-			}
-        },{
             "path" : "pages/tape/tape",
             "style" : {
 				"navigationBarTitleText": "录音"

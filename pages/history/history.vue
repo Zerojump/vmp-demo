@@ -1,14 +1,14 @@
 <template>
-	<view>
-		<scroll-view class="nav" scroll-x="true" scroll-left="120">
+	<view class="page">
+		<scroll-view class="nav" scroll-x="true">
 			<view id="demo1" class="nav-item" v-bind:class="{active:curTabIndex===index}"
 			 @click="changeTab(index)"
 			 v-for="(item,index) in tabs">{{item.title}}</view>
 		</scroll-view>
 		
-		<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" lower-threshold=1 show-scrollbar=true
-		 @scroll="scroll">
-			<uni-list-item v-bind:title="item.content" v-for="item in list" @click="openDetail(item.record_id)"></uni-list-item>
+		<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" lower-threshold=20 show-scrollbar=true
+		 @scroll="scroll" @scrolltoupper="upper" @scrolltolower="lower">
+			<uni-list-item class="list-item" v-bind:title="item.content" v-for="item in list" @click="openDetail(item.record_id)"></uni-list-item>
 		</scroll-view>
 	</view>
 </template>
@@ -20,22 +20,19 @@
 	    components: {uniList,uniListItem},
 		data() {
 			return {
-				sessionId:'',
+				scrollLeft:100,
 				curTabIndex:1,
-				page_size:6,
+				page_size:15,
 				tabs:[
-					{title:'全部',type:'all',pageIndex:1},
-					{title:'已通过',type:'pass',pageIndex:1},
-					{title:'待审阅',type:'pending',pageIndex:1}
+					{title:'全部',type:'all',pageIndex:1,total:100000},
+					{title:'已通过',type:'pass',pageIndex:1,total:100000},
+					{title:'待审阅',type:'pending',pageIndex:1,total:100000}
 				],
 				list:[],
 				scrollTop: 0,
-				old: {
-					scrollTop: 0
-				}
 			}
 		},
-		onLoad() {
+		onShow() {
 			let page = this.getList(this.curTabIndex,false)
 		},
 		methods: {
@@ -46,6 +43,9 @@
 			getList(tabIndex,more){	
 				let self = this
 				let tab = self.tabs[tabIndex]
+				if (tab.total<=self.list.length) {
+					return
+				}
 				let page_index = tab.pageIndex
 				console.log(tab.type+' '+more+' '+page_index)
 				if (more) {
@@ -54,7 +54,7 @@
 				
 				uni.request({
 					url: 'http://172.27.1.207:8009/rmserver/get-history-records',
-					// url: 'http://localhost:9097/rmserver/get-history-records',
+					// url: 'http://172.19.1.231:9097/rmserver/get-history-records',
 					method: 'POST',
 					data: {
 						 "query_type": tab.type,
@@ -67,6 +67,7 @@
 					success: res => {
 						self.curTabIndex = tabIndex
 						self.tabs[self.curTabIndex].pageIndex = page_index
+						self.tabs[self.curTabIndex].total = res.data.total
 						// console.log(res.data.list)
 						if (more) {
 							self.list = self.list.concat(res.data.list)
@@ -82,7 +83,7 @@
 			},
 			scroll: function(e) {
 				// console.log(e)
-				this.old.scrollTop = e.detail.scrollTop
+				this.scrollTop = e.detail.scrollTop
 			}
 			,openDetail(audioid){
 				uni.navigateTo({
@@ -92,10 +93,14 @@
 			upper: function(e) {
 				console.log('top')
 				console.log(e)
+				
+				this.tabs[this.curTabIndex].pageIndex = 1
+				this.getList(this.curTabIndex,false)
 			},
 			lower: function(e) {
 				console.log('end')
 				console.log(e)
+				
 				this.getList(this.curTabIndex,true)
 			},
 			goTop: function(e) {
@@ -114,6 +119,9 @@
 </script>
 
 <style>
+	.page {
+		background: #E5E5E5;
+	}
 	.nav {
 	    height: 80rpx;
 	    width: 100%;
@@ -129,7 +137,7 @@
 	    z-index: 99;
 	}
 	.nav-item {
-	    width: 20%;
+	    width: 33.34%;
 	    display: inline-block;
 	    text-align: center;
 	}
@@ -138,7 +146,7 @@
 	}
 	.scroll-Y {
 		margin-top:80upx ;
-		height: 500upx;
-		background: #BBBBBB;
+		height: 1000upx;
+		background: #FFFFFF;
 	}
 </style>

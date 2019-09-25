@@ -46,10 +46,7 @@
 		},
 		onLoad() {
 			try {
-			    const sessionId = uni.getStorageSync('sessionId');
-			    if (sessionId) {
-			        console.log(sessionId);
-			    }
+				console.log(uni.getStorageSync('sessionId'))
 				uni.request({
 					url: 'http://172.27.1.207:8009/rmserver/get-sentence',
 					method: 'POST',
@@ -57,7 +54,7 @@
 						"count": 10
 					},
 					header: {
-						"Gowild-SessionId": sessionId
+						"Gowild-SessionId": uni.getStorageSync('sessionId')
 					},
 					success: res => {
 						let d = res.data.data[0]
@@ -112,7 +109,7 @@
 						"file_name":fileName
 					},
 					header:{
-						"Gowild-SessionId":self.sessionId
+						"Gowild-SessionId":uni.getStorageSync('sessionId')
 					},
 					success: res => {
 						console.log(res.data)
@@ -138,7 +135,7 @@
 												 "sentence_id": self.sentence_id
 											},
 											header:{
-												"Gowild-SessionId":self.sessionId
+												"Gowild-SessionId":uni.getStorageSync('sessionId')
 											},
 											success: res => {
 												console.log(res)

@@ -11,7 +11,6 @@
       <view class="uni-btn-v">
         <button type="primary" @tap="openTape">开始录音</button>
         <button type="default" @tap="openHistory">历史数据</button>
-		<button type="default" @tap="openHistory2">历史数据2</button>
       </view>
     </view>
   </view>
@@ -21,7 +20,6 @@
     export default {
         data() {
             return {
-				sessionId:'tourist'
             }
         },
         onLoad() {
@@ -35,9 +33,6 @@
                             method: 'POST',
                             data: {
                                 "code": res.code
-                            },
-                            header: {
-                                "Gowild-SessionId": "tourist"
                             },
                             success: sessionRes => {
 								console.log('login resp:')
@@ -71,11 +66,6 @@
             openHistory() {
                 uni.navigateTo({
                     url: '../history/history'
-                })
-            },
-            openHistory2() {
-                uni.navigateTo({
-                    url: '../history/history2'
                 })
             }
         }
