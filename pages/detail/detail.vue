@@ -4,7 +4,7 @@
 			<view class="page-section page-section-gap" style="text-align: center;">
 				<audio style="text-align: left" :src="record.audio_url" poster="../../static/gowild_logo-1.png" :name="record.content" author="" :action="audioAction" controls></audio>
 			 </view>
-			<view class="uni-flex uni-column">
+			<view class="uni-btn-v">
 				<button type="default" @click="openTape(this.record.record_id)">重新录音</button>
 			</view>
 		</view>

@@ -128,6 +128,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 var _default =
 {
   data: function data() {
@@ -182,6 +183,11 @@ var _default =
     openHistory: function openHistory() {
       uni.navigateTo({
         url: '../history/history' });
+
+    },
+    openHistory2: function openHistory2() {
+      uni.navigateTo({
+        url: '../history/history2' });
 
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))

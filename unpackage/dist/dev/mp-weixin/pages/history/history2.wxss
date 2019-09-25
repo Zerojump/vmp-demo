@@ -1,4 +1,7 @@
 
+.page {
+	background: #E5E5E5;
+}
 .nav {
     height: 80rpx;
     width: 100%;
@@ -24,7 +27,7 @@
 }
 .scroll-Y {
 	margin-top:80rpx;
-	height: 500rpx;
-	background: #BBBBBB;
+	height: 1000rpx;
+	background: #FFFFFF;
 }
 

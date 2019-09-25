@@ -12,7 +12,7 @@
 				<uni-list-item v-bind:title="item" v-for="item in list" showArrow="false"></uni-list-item>
 			</uni-list>
 
-			<view  class="uni-btn-v">
+			<view class="uni-btn-v">
 				<button @tap="startRecord" type="primary">开始录音</button>
 				<button @tap="endRecord">停止录音</button>
 				<button @tap="playVoice">播放录音</button>

@@ -129,7 +129,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       sessionId: '',
       curTabIndex: 1,
-      page_size: 15,
+      page_size: 6,
       tabs: [
       { title: '全部', type: 'all', pageIndex: 1 },
       { title: '已通过', type: 'pass', pageIndex: 1 },
@@ -160,8 +160,8 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       uni.request({
-        // url: 'http://172.27.1.207:8009/rmserver/get-history-records',
-        url: 'http://localhost:9097/rmserver/get-history-records',
+        url: 'http://172.27.1.207:8009/rmserver/get-history-records',
+        // url: 'http://localhost:9097/rmserver/get-history-records',
         method: 'POST',
         data: {
           "query_type": tab.type,
@@ -174,11 +174,13 @@ __webpack_require__.r(__webpack_exports__);
         success: function success(res) {
           self.curTabIndex = tabIndex;
           self.tabs[self.curTabIndex].pageIndex = page_index;
+          // console.log(res.data.list)
           if (more) {
             self.list = self.list.concat(res.data.list);
           } else {
             self.list = res.data.list;
           }
+          // console.log(self.list)
           console.log(self.list.length);
         },
         fail: function fail() {},
@@ -188,8 +190,6 @@ __webpack_require__.r(__webpack_exports__);
     scroll: function scroll(e) {
       // console.log(e)
       this.old.scrollTop = e.detail.scrollTop;
-      console.log('getList');
-      this.getList(this.curTabIndex, true);
     },
     openDetail: function openDetail(audioid) {
       uni.navigateTo({
@@ -203,6 +203,7 @@ __webpack_require__.r(__webpack_exports__);
     lower: function lower(e) {
       console.log('end');
       console.log(e);
+      this.getList(this.curTabIndex, true);
     },
     goTop: function goTop(e) {
       console.log(e);
