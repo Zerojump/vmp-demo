@@ -2,7 +2,7 @@
 	<view>
 		<view class="uni-padding-wrap uni-common-mt">
 			<view class="home-title">
-				<text>点击录音按钮，独处以下句子。</text><br>
+				<text>点击录音按钮，读出以下句子。</text><br>
 				<text>读完后松开按钮</text>
 			</view>
 
@@ -164,12 +164,12 @@
 
 <style>
 	.home-title {
-		font-size:12px;
+		font-size:14px;
 		text-align:center;
 	}
 	.sentence {
 		margin: 18px;
-		font-size:20px;
+		font-size:28px;
 		text-align:center;
 	}
 	.bottom-button {

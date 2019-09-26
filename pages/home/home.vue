@@ -98,7 +98,7 @@
 <style>
 	.logo-box {
 		text-align: center;
-		margin-top: 80upx;
+		margin-top: 60upx;
 		margin-bottom: 20upx;
 	}
 	.logo {
