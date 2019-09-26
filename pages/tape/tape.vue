@@ -172,4 +172,8 @@
 		font-size:20px;
 		text-align:center;
 	}
+	.bottom-button {
+		position:fixed;
+		  bottom:0;
+	}
 </style>

@@ -4,8 +4,11 @@
 			<view class="page-section page-section-gap" style="text-align: center;">
 				<audio style="text-align: left" :src="record.audio_url" poster="../../static/gowild_logo-1.png" :name="record.content" author="" :action="audioAction" controls></audio>
 			 </view>
-			 <text v-show="isPass">已通过</text><br>
-			 <text v-show="!isPass">未通过</text>
+			 <view class="home-title">
+				 <text v-show="isPass">已通过</text><br>
+				 <text v-show="!isPass">未通过</text> 
+			 </view>
+
 			<view v-if="!isPass" class="uni-btn-v">
 				<button @tap="startRecord" type="primary" v-show="!isRecord">重新录音</button>
 				<button @tap="endRecord" type="primary" v-show="isRecord">停止录音</button>
@@ -142,5 +145,8 @@
 </script>
 
 <style>
-
+	.home-title {
+		font-size:15px;
+		text-align:center;
+	}
 </style>
