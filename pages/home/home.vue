@@ -1,18 +1,19 @@
 <template>
   <view>
     <view class="uni-padding-wrap uni-common-mt">
-      <image src="../../static/gowild_logo-1.png"></image>
-      
-	  <view class="text-box" scroll-y="true">
-		  <text>欢迎使用狗尾草小鹦鹉</text><br>
-		  <text>感谢你的时间</text>
-	  </view>
+		<div class="logo-box">
+			<image class="logo" src="../../static/gowild_logo-1.png" ></image>
+		</div>
+		<view class="home-title">
+			<text>欢迎使用狗尾草小鹦鹉</text><br>
+			<text>感谢你的时间</text>
+		</view>
 
-      <view class="uni-btn-v">
-        <button type="primary" @tap="openTape">开始录音</button>
-        <button type="default" @tap="openHistory">历史数据</button>
-		<button type="default" open-type="getUserInfo" @getuserinfo="onGotUserInfo">提供昵称</button>
-      </view>
+		<view class="uni-btn-v">
+			<button type="primary" @tap="openTape">开始录音</button>
+			<button type="default" @tap="openHistory">历史数据</button>
+			<button type="default" open-type="getUserInfo" @getuserinfo="onGotUserInfo">提供昵称</button>
+		</view>
     </view>
   </view>
 </template>
@@ -95,5 +96,17 @@
 </script>
 
 <style>
-
+	.logo-box {
+		text-align: center;
+		margin-top: 80upx;
+		margin-bottom: 20upx;
+	}
+	.logo {
+		width: 500upx;
+		height: 500upx;
+	}
+	.home-title {
+		font-size:15px;
+		text-align:center;
+	}
 </style>

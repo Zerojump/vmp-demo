@@ -1,15 +1,23 @@
 <template>
-	<view class="page">
-		<scroll-view class="nav" scroll-x="true">
-			<view id="demo1" class="nav-item" v-bind:class="{active:curTabIndex===index}"
-			 @click="changeTab(index)"
-			 v-for="(item,index) in tabs">{{item.title}}</view>
-		</scroll-view>
-		
-		<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" lower-threshold=20 show-scrollbar=true
-		 @scroll="scroll" @scrolltoupper="upper" @scrolltolower="lower">
-			<uni-list-item class="list-item" v-bind:title="item.content" v-for="item in tabs[curTabIndex].list" @click="openDetail(item.record_id)"></uni-list-item>
-		</scroll-view>
+	
+	<view>
+		<view class="uni-padding-wrap uni-common-mt">
+			<view class="uni-flex uni-column">
+				<view class="flex-item flex-item-V ">
+					<scroll-view class="nav" scroll-x="true">
+						<view id="demo1" class="nav-item" v-bind:class="{active:curTabIndex===index}"
+						 @click="changeTab(index)"
+						 v-for="(item,index) in tabs">{{item.title}}</view>
+					</scroll-view>
+				</view>
+				<view class="flex-item flex-item-V">
+					<scroll-view :scroll-top="scrollTop" scroll-y="true" class="scroll-Y" lower-threshold=20 show-scrollbar=true
+					 @scroll="scroll" @scrolltoupper="upper" @scrolltolower="lower">
+						<uni-list-item class="list-item" v-bind:title="item.content" v-for="item in tabs[curTabIndex].list" @click="openDetail(item.record_id)"></uni-list-item>
+					</scroll-view>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 

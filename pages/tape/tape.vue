@@ -1,21 +1,25 @@
 <template>
 	<view>
 		<view class="uni-padding-wrap uni-common-mt">
-			<view class="uni-title uni-common-mt">
-				<p>请将手机靠近嘴巴，按下绿色按钮，独处以下句子。</p>
-				<p>读完后松开按钮</p>
+			<view class="home-title">
+				<text>点击录音按钮，独处以下句子。</text><br>
+				<text>读完后松开按钮</text>
 			</view>
 
-			<h1>{{cur_content}}</h1>
+			<view class="sentence uni-bold">
+				<text>{{cur_content}}</text>
+			</view>
 			<br>
-			<uni-list>
-				<uni-list-item v-bind:title="item" v-for="item in list" showArrow="false"></uni-list-item>
-			</uni-list>
-
+			
+			<view class="uni-center">
+				<p v-for="item in list">{{item}}</p>
+			</view>
+			
 			<view class="uni-btn-v">
 				<button @tap="startRecord" type="primary" v-show="!isRecord">开始录音</button>
 				<button @tap="endRecord" type="primary" v-show="isRecord">停止录音</button>
 				<button @tap="playVoice" v-show="voicePath!=''">播放录音</button>
+				<button @tap="getSentence" v-show="voicePath!=''">下一句</button>
 			</view>
 		</view>
 	</view>
@@ -44,32 +48,7 @@
 			}
 		},
 		onLoad() {
-			try {
-				console.log(uni.getStorageSync('sessionId'))
-				uni.request({
-					url: 'http://172.27.1.207:8009/rmserver/get-sentence',
-					method: 'POST',
-					data: {
-						"count": 10
-					},
-					header: {
-						"Gowild-SessionId": uni.getStorageSync('sessionId')
-					},
-					success: res => {
-						let d = res.data.data[0]
-						console.log(d)
-						this.cur_content = d.cur_content
-						this.list = d.history_contents
-						this.sentence_id = d.sentence_id
-					},
-					fail: () => {},
-					complete: () => {}
-				});
-			} catch (e) {
-			    console.log('get session id err')
-			    console.log(e)
-			}
-
+			this.getSentence()
 			let self = this;
 			recorderManager.onStop(function(res) {
 				console.log('recorder stop' + JSON.stringify(res));
@@ -95,7 +74,34 @@
 					innerAudioContext.play();
 				}
 			},
-			
+			getSentence() {
+				try {
+					console.log(uni.getStorageSync('sessionId'))
+					uni.request({
+						url: 'http://172.27.1.207:8009/rmserver/get-sentence',
+						method: 'POST',
+						data: {
+							"count": 7
+						},
+						header: {
+							"Gowild-SessionId": uni.getStorageSync('sessionId')
+						},
+						success: res => {
+							if (res.data && res.data.data[0]) {
+								let d = res.data.data[0]
+								console.log(d)
+								this.cur_content = d.cur_content
+								this.list = d.history_contents
+								this.sentence_id = d.sentence_id
+								this.voicePath = ''
+							}
+						}
+					});
+				} catch (e) {
+				    console.log('get session id err')
+				    console.log(e)
+				}
+			},
 			upload2Qiniu(recordFilePath){
 				let self = this
 				let spark = new SparkMD5()
@@ -157,5 +163,13 @@
 </script>
 
 <style>
-
+	.home-title {
+		font-size:12px;
+		text-align:center;
+	}
+	.sentence {
+		margin: 18px;
+		font-size:20px;
+		text-align:center;
+	}
 </style>
