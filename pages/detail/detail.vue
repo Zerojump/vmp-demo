@@ -6,9 +6,13 @@
 			 </view>
 			 <view class="home-title">
 				 <text v-show="isPass">已通过</text><br>
-				 <text v-show="!isPass">未通过</text> 
+				 <text v-show="!isPass">未通过</text><br>
 			 </view>
-
+			 <view class="uni-center">
+				<text>{{new Date(recordTime).toLocaleString()}} 录音</text><br>
+				<text v-show="isPass">{{new Date(passTime).toLocaleString()}} 审核通过</text><br>
+			 </view>
+			 
 			<view v-if="!isPass" class="uni-btn-v">
 				<button @tap="startRecord" type="primary" v-show="!isRecord">重新录音</button>
 				<button @tap="endRecord" type="primary" v-show="isRecord">停止录音</button>
@@ -20,6 +24,7 @@
 </template>
 
 <script>
+	import SparkMD5 from 'spark-md5'
 	const recorderManager = uni.getRecorderManager()
 	const innerAudioContext = uni.createInnerAudioContext()
 	innerAudioContext.autoplay = true
@@ -40,6 +45,8 @@
 					this.record = res.data.data[0]
 					this.record.record_id = p.record_id
 					this.isPass = this.record.is_pass === 1
+					this.recordTime = this.record.create_time
+					this.passTime = this.record.pass_time
 					console.log(res.data)
 				}
 			})
@@ -59,7 +66,9 @@
 				voicePath: '',
 				isRecord:false,
 				sentence_id:null,
-				record:null
+				record:null,
+				recordTime:0,
+				passTime:0,
 			}
 		},
 		methods: {
@@ -81,9 +90,9 @@
 				}
 			},
 			replaceVoice() {
-				self.upload2Qiniu(self.voicePath)
+				this.upload2Qiniu(this.voicePath)
 				if (this.record) {
-					this.record.audio_url = self.voicePath
+					this.record.audio_url = this.voicePath
 				}
 			},
 			upload2Qiniu(recordFilePath){

@@ -1,6 +1,11 @@
 <template>
 	<view>
-		<view class="uni-padding-wrap uni-common-mt">
+		<view class="uni-padding-wrap uni-common-mt" v-if="!hasSentence">
+			<view class="home-title">
+				<text>没有需要录音的句子啦</text>
+			</view>
+		</view>
+		<view class="uni-padding-wrap uni-common-mt" v-if="hasSentence">
 			<view class="home-title">
 				<text>点击录音按钮，读出以下句子。</text><br>
 				<text>读完后松开按钮</text>
@@ -41,6 +46,7 @@
 		},
 		data() {
 			return {
+				hasSentence:false,
 				isRecord:false,
 				cur_content: '',
 				list: [],
@@ -90,11 +96,16 @@
 						success: res => {
 							if (res.data && res.data.data[0]) {
 								let d = res.data.data[0]
-								console.log(d)
-								this.cur_content = d.cur_content
-								this.list = d.history_contents
-								this.sentence_id = d.sentence_id
-								this.voicePath = ''
+								if (d.sentence_id > 0) {
+									this.hasSentence = true
+									console.log(d)
+									this.cur_content = d.cur_content
+									this.list = d.history_contents
+									this.sentence_id = d.sentence_id
+									this.voicePath = ''
+								} else {
+									this.hasSentence = false
+								}
 							}
 						}
 					});
