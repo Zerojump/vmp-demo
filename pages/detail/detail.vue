@@ -9,8 +9,8 @@
 				 <text v-show="!isPass">未通过</text><br>
 			 </view>
 			 <view class="uni-center">
-				<text>{{new Date(recordTime).toLocaleString()}} 录音</text><br>
-				<text v-show="isPass">{{new Date(passTime).toLocaleString()}} 审核通过</text><br>
+				<text>{{formatDate(recordTime)}} 录音</text><br>
+				<text v-show="isPass">{{formatDate(passTime)}} 审核通过</text><br>
 			 </view>
 			 
 			<view v-if="!isPass" class="uni-btn-v">
@@ -94,6 +94,10 @@
 				if (this.record) {
 					this.record.audio_url = this.voicePath
 				}
+				uni.showToast({
+				    title: '替换完成',
+				    duration: 2000
+				});
 			},
 			upload2Qiniu(recordFilePath){
 				let self = this
@@ -148,6 +152,23 @@
 						
 					}
 				});
+			},
+			formatDate(time){
+				var date = new Date(time);
+			
+				var year = date.getFullYear(),
+					month = date.getMonth() + 1,//月份是从0开始的
+					day = date.getDate(),
+					hour = date.getHours(),
+					min = date.getMinutes(),
+					sec = date.getSeconds();
+				var newTime = year + '-' +
+							month + '-' +
+							day + ' ' +
+							hour + ':' +
+							min + ':' +
+							sec;
+				return newTime;			
 			}
 		}
 	}
