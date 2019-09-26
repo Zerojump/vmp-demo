@@ -11,8 +11,9 @@
 			</view>
 			<br>
 			
-			<view class="uni-center">
+			<view class="uni-center history-sentence">
 				<p v-for="item in list">{{item}}</p>
+				<p>...</p>
 			</view>
 			
 			<view class="uni-btn-v">
@@ -172,8 +173,7 @@
 		font-size:28px;
 		text-align:center;
 	}
-	.bottom-button {
-		position:fixed;
-		  bottom:0;
+	.history-sentence p {
+		font-size:12px;
 	}
 </style>
