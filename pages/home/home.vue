@@ -10,9 +10,9 @@
 		</view>
 
 		<view class="uni-btn-v">
-			<button type="primary" @tap="openTape">开始录音</button>
+			<button type="primary" open-type="getUserInfo" @getuserinfo="onGotUserInfo" @tap="openTape">进入录音</button>
 			<button type="default" @tap="openHistory">历史数据</button>
-			<button type="default" open-type="getUserInfo" @getuserinfo="onGotUserInfo">提供昵称</button>
+			<!-- <button type="default" open-type="getUserInfo" @getuserinfo="onGotUserInfo">提供昵称</button> -->
 		</view>
     </view>
   </view>
@@ -31,7 +31,7 @@
                     if (res.code) {
                         console.log('wechat_code:'+res.code)
                         uni.request({
-                            url: 'http://172.27.1.207:8009/rmserver/login-in',
+                            url: 'https://asr-record.gowild.info/rmserver/login-in',
                             method: 'POST',
                             data: {
                                 "code": res.code
@@ -60,23 +60,14 @@
             })
         },
         methods: {
-            openTape() {
-                uni.navigateTo({
-                    url: '../tape/tape'
-                })
-            },
             openHistory() {
                 uni.navigateTo({
                     url: '../history/history'
                 })
             },
-			onGotUserInfo(e) {
-			    console.log(e.detail.errMsg)
-			    console.log(e.detail.userInfo)
-			    console.log(e.detail.rawData)
-				
+			onGotUserInfo(e) {		
 				uni.request({
-				    url: 'http://172.27.1.207:8009/rmserver/create-or-update-userinfo',
+				    url: 'https://asr-record.gowild.info/rmserver/create-or-update-userinfo',
 				    method: 'POST',
 				    data: {
 				        "nickname": e.detail.userInfo.nickName,
@@ -90,6 +81,40 @@
 				        console.log(sessionRes.data)
 				    }
 				})
+			},
+			openTape() {
+				try {
+					console.log(uni.getStorageSync('sessionId'))
+					uni.request({
+						url: 'https://asr-record.gowild.info/rmserver/get-sentence',
+						method: 'POST',
+						data: {
+							"count": 4
+						},
+						header: {
+							"Gowild-SessionId": uni.getStorageSync('sessionId')
+						},
+						success: res => {
+							if (res.data && res.data.data[0]) {
+								let d = res.data.data[0]
+								if (d.sentence_id > 0) {
+									uni.navigateTo({
+									    url: '../tape/tape'
+									})
+								} else {
+									uni.showToast({
+									    title: '真棒！所有句子都念完了',
+									    duration: 1000,
+										icon:'none'
+									})
+								}
+							}
+						}
+					});
+				} catch (e) {
+				    console.log('get session id err')
+				    console.log(e)
+				}
 			},
         }
     }

@@ -60,7 +60,7 @@
 				}
 				
 				uni.request({
-					url: 'http://172.27.1.207:8009/rmserver/get-history-records',
+					url: 'https://asr-record.gowild.info/rmserver/get-history-records',
 					// url: 'http://172.19.1.231:9097/rmserver/get-history-records',
 					method: 'POST',
 					data: {
@@ -143,7 +143,7 @@
 	    overflow: hidden;
 	    line-height: 80rpx;
 	    background: #f7f7f7;
-	    font-size: 16px;
+	    font-size: 18px;
 	    white-space: nowrap;
 	    position: fixed;
 	    top: 0;
@@ -154,6 +154,8 @@
 	    width: 33.34%;
 	    display: inline-block;
 	    text-align: center;
+		font-size: 14px;
+		font-weight:550;
 	}
 	.nav-item.active{
 	    color: green;

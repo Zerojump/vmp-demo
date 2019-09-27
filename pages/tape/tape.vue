@@ -7,7 +7,7 @@
 		</view>
 		<view class="uni-padding-wrap uni-common-mt" v-if="hasSentence">
 			<view class="home-title">
-				<text>点击录音按钮，读出以下句子。</text><br>
+				<text>按住录音按钮，读出以下句子。</text><br>
 				<text>读完后松开按钮</text>
 			</view>
 
@@ -22,10 +22,12 @@
 			</view>
 			
 			<view class="uni-btn-v">
-				<button @tap="startRecord" type="primary" v-show="!isRecord">开始录音</button>
-				<button @tap="endRecord" type="primary" v-show="isRecord">停止录音</button>
+				<button type="primary" @touchstart="startRecord" @touchend="endRecord">{{voicePath ===''? '按住说话' : '重新录音'}}</button>
+				<!-- <button @tap="startRecord" type="primary" v-show="!isRecord">点击录音</button>
+				<button @tap="endRecord" type="primary" v-show="isRecord">停止录音</button> -->
 				<button @tap="playVoice" v-show="voicePath!=''">播放录音</button>
 				<button @tap="getSentence" v-show="voicePath!=''">下一句</button>
+				<button type="default" @tap="openHistory">历史数据</button>
 			</view>
 		</view>
 	</view>
@@ -62,22 +64,44 @@
 				self.voicePath = res.tempFilePath;
 				self.upload2Qiniu(self.voicePath)
 			})
+			
+			innerAudioContext.onEnded(function(res){
+				uni.hideToast();
+			})
 		},
 		methods: {
+			openHistory() {
+			    uni.navigateTo({
+			        url: '../history/history'
+			    })
+			},
 			startRecord() {
 				console.log('开始录音');
 				this.isRecord = !this.isRecord
+				uni.showToast({
+				    title: '录音中...',
+				    duration: 100000000,
+					icon:'none',
+					image:'../../static/record.png'
+				})
 				recorderManager.start();
 			},
 			endRecord() {
 				console.log('录音结束');
 				this.isRecord = !this.isRecord
 				recorderManager.stop();
+				uni.hideToast();
 			},
 			playVoice() {
 				console.log('播放录音');
 				if (this.voicePath) {
 					innerAudioContext.src = this.voicePath;
+					uni.showToast({
+					    title: '播放...',
+					    duration: 100000000,
+						icon:'none',
+						image:'../../static/play.png'
+					})
 					innerAudioContext.play();
 				}
 			},
@@ -85,10 +109,10 @@
 				try {
 					console.log(uni.getStorageSync('sessionId'))
 					uni.request({
-						url: 'http://172.27.1.207:8009/rmserver/get-sentence',
+						url: 'https://asr-record.gowild.info/rmserver/get-sentence',
 						method: 'POST',
 						data: {
-							"count": 7
+							"count": 4
 						},
 						header: {
 							"Gowild-SessionId": uni.getStorageSync('sessionId')
@@ -105,6 +129,14 @@
 									this.voicePath = ''
 								} else {
 									this.hasSentence = false
+									uni.showToast({
+									    title: '真棒！所有句子都念完了',
+									    duration: 1000,
+										icon:'none'
+									})
+									uni.redirectTo({
+									    url: '../home/home'
+									});
 								}
 							}
 						}
@@ -122,7 +154,7 @@
 				let fileName = fileMd5+recordFilePath.substring(recordFilePath.lastIndexOf('.'))
 				console.log(fileName)
 				uni.request({
-					url: 'http://172.27.1.207:8009/rmserver/get-upload-token',
+					url: 'https://asr-record.gowild.info/rmserver/get-upload-token',
 					method: 'POST',
 					data:{
 						"file_name":fileName
@@ -134,7 +166,7 @@
 						console.log(res.data)
 
 						uni.uploadFile({
-						            url: 'http://up-z2.qiniup.com/',
+						            url: 'https://up-z2.qiniup.com/',
 						            filePath: recordFilePath,
 						            name: 'file',
 						            formData: {
@@ -147,7 +179,7 @@
 						                console.log(audit_url)
 										
 										uni.request({
-											url: 'http://172.27.1.207:8009/rmserver/create-or-update-record',
+											url: 'https://asr-record.gowild.info/rmserver/create-or-update-record',
 											method: 'POST',
 											data: {
 												 "audio_url": audit_url,
@@ -158,13 +190,13 @@
 											},
 											success: res => {
 												console.log(res)
-											},
-											fail: () => {},
-											complete: () => {}
+											}
 										});
-						            }
+						            },
+									fail() {
+										console.log('upload fail')
+									}
 						        });
-						
 					},
 					fail: () => {},
 					complete: () => {}
@@ -180,7 +212,7 @@
 		text-align:center;
 	}
 	.sentence {
-		margin: 18px;
+		margin: 10px;
 		font-size:28px;
 		text-align:center;
 	}

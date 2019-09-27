@@ -2,7 +2,7 @@
 	<view>
 		<view class="uni-padding-wrap uni-common-mt">
 			<view class="page-section page-section-gap" style="text-align: center;">
-				<audio style="text-align: left" :src="record.audio_url" poster="../../static/gowild_logo-1.png" :name="record.content" author="" :action="audioAction" controls></audio>
+				<audio style="text-align: left" :src="record.audio_url" poster="../../static/gowild_logo-1.png" :name="record.content" author=" " :action="audioAction" controls></audio>
 			 </view>
 			 <view class="home-title">
 				 <text v-show="isPass">已通过</text><br>
@@ -14,8 +14,9 @@
 			 </view>
 			 
 			<view v-if="!isPass" class="uni-btn-v">
-				<button @tap="startRecord" type="primary" v-show="!isRecord">重新录音</button>
-				<button @tap="endRecord" type="primary" v-show="isRecord">停止录音</button>
+				<button type="primary" @touchstart="startRecord" @touchend="endRecord">重新录音</button>
+				<!-- <button @tap="startRecord" type="primary" v-show="!isRecord">重新录音</button>
+				<button @tap="endRecord" type="primary" v-show="isRecord">停止录音</button> -->
 				<button @tap="playVoice" v-show="voicePath!=''">播放录音</button>
 				<button @tap="replaceVoice" v-show="voicePath!=''">替换录音</button>
 			</view>
@@ -33,7 +34,7 @@
 		onLoad(p) {
 			this.sentence_id = p.sentence_id
 			uni.request({
-				url: 'http://172.27.1.207:8009/rmserver/detail-record',
+				url: 'https://asr-record.gowild.info/rmserver/detail-record',
 				method:'POST',
 				data:{
 					"record_id":p.record_id
@@ -56,6 +57,10 @@
 				console.log('recorder stop' + JSON.stringify(res));
 				self.voicePath = res.tempFilePath;
 			})
+			
+			innerAudioContext.onEnded(function(res){
+				uni.hideToast();
+			})
 		},
 		data() {
 			return {
@@ -75,17 +80,30 @@
 			startRecord() {
 				console.log('开始录音');
 				this.isRecord = !this.isRecord
+				uni.showToast({
+				    title: '录音中...',
+				    duration: 100000000,
+					icon:'none',
+					image:'../../static/record.png'
+				})
 				recorderManager.start();
 			},
 			endRecord() {
 				console.log('录音结束');
 				this.isRecord = !this.isRecord
 				recorderManager.stop();
+				uni.hideToast();
 			},
 			playVoice() {
 				console.log('播放录音');
 				if (this.voicePath) {
 					innerAudioContext.src = this.voicePath;
+					uni.showToast({
+					    title: '播放...',
+					    duration: 100000000,
+						icon:'none',
+						image:'../../static/play.png'
+					})
 					innerAudioContext.play();
 				}
 			},
@@ -96,7 +114,7 @@
 				}
 				uni.showToast({
 				    title: '替换完成',
-				    duration: 2000
+				    duration: 1000
 				});
 			},
 			upload2Qiniu(recordFilePath){
@@ -107,7 +125,7 @@
 				let fileName = fileMd5+recordFilePath.substring(recordFilePath.lastIndexOf('.'))
 				console.log(fileName)
 				uni.request({
-					url: 'http://172.27.1.207:8009/rmserver/get-upload-token',
+					url: 'https://asr-record.gowild.info/rmserver/get-upload-token',
 					method: 'POST',
 					data:{
 						"file_name":fileName
@@ -132,7 +150,7 @@
 						                console.log(audit_url)
 										
 										uni.request({
-											url: 'http://172.27.1.207:8009/rmserver/create-or-update-record',
+											url: 'https://asr-record.gowild.info/rmserver/create-or-update-record',
 											method: 'POST',
 											data: {
 												 "audio_url": audit_url,
